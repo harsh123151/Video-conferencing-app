@@ -3,14 +3,17 @@ const socket = io('/')
 const peer = new Peer(undefined, {
   path: '/mypeer',
   host: '/',
-  port: '443',
+  port: '3000',
 })
+const height = window.innerHeight
 const peers = {}
 const videoGrid = document.getElementById('video-grid')
+videoGrid.style.cssText = `height:${height - 60}px`
 const myvideo = document.createElement('video')
 const input = document.getElementById('chat-message')
 const div = document.getElementById('chat-div')
-const chat = document.getElementById('chattt')
+div.style.cssText = `height:${height - 60}px`
+const chat = document.getElementById('chat')
 const submit = document.getElementById('submit')
 const invite = document.getElementById('invite')
 const video = document.getElementById('video')
@@ -19,7 +22,7 @@ const joinedinfo = document.getElementById('join')
 const total = document.getElementById('total')
 const end = document.getElementById('end')
 const messagebtn = document.getElementById('message')
-const videocontainer = document.querySelector('.videoss')
+const videocontainer = document.querySelector('.videos')
 const crossbtn = document.getElementById('cross')
 input.value = ''
 let myvideoStream
@@ -33,6 +36,7 @@ navigator.mediaDevices
   .then((stream) => {
     myvideoStream = stream
     addVideoStream(myvideo, stream)
+
     socket.on('user-connected', (userid, nam) => {
       total.innerText = parseInt(total.innerText) + 1
       connectNewUser(userid, myvideoStream)
@@ -62,7 +66,11 @@ navigator.mediaDevices
     })
   })
 
-peer.on('call', (call) => {
+peer.on('open', (id) => {
+  total.innerText = parseInt(total.innerText) + 1
+  socket.emit('join-room', Room, id, myname)
+})
+peer.on('call', async (call) => {
   peers[call.peer] = call
   total.innerText = parseInt(total.innerText) + 1
   navigator.mediaDevices
@@ -80,11 +88,6 @@ peer.on('call', (call) => {
         video.remove()
       })
     })
-})
-
-peer.on('open', (id) => {
-  total.innerText = parseInt(total.innerText) + 1
-  socket.emit('join-room', Room, id, myname)
 })
 
 const connectNewUser = (id, stream) => {
@@ -184,7 +187,7 @@ const scrollToBottom = () => {
 
 messagebtn.addEventListener('click', () => {
   videocontainer.style.cssText = 'display:none'
-  chat.style.cssText = 'display:block;width:100vw;height:100vh'
+  chat.style.cssText = `display:block;width:100%;height:100%`
 })
 
 crossbtn.addEventListener('click', () => {
@@ -193,11 +196,11 @@ crossbtn.addEventListener('click', () => {
 })
 
 window.addEventListener('resize', () => {
+  let height = window.innerHeight
+  videoGrid.style.cssText = `height:${height - 60}px`
+  div.style.cssText = `height:${height - 60}px`
   if (window.innerWidth > 1054) {
     videocontainer.style.cssText = 'display:block'
-    chat.style.cssText = 'display:block'
-  } else {
-    console.log('hello')
-    chat.style.cssText = 'display:none'
+    chat.style.cssText = 'width:464px'
   }
 })
