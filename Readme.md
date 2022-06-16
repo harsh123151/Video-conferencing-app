@@ -27,9 +27,9 @@
 
 ## Installation
 
-1. `git clone https://github.com/harsh123151/Zoom-clone.git`
+1. `git clone https://github.com/harsh123151/Video-conferencing-app.git`
 
-2. `cd ./Zoom-clone`
+2. `cd ./Video-conferencing-app`
 
 3. Install node dependencies
 
